@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import okhttp3.*
@@ -37,9 +38,8 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 val res = response.body!!.string()
                 this@MainActivity.runOnUiThread(Runnable() {
-
                     val jsonArray = JSONArray(res)
-                   for (i in 0 until jsonArray.length()) {
+                    for (i in 0 until jsonArray.length()) {
                         try {
                             val jsonObject = jsonArray.getJSONObject(i)
                             val author = jsonObject.getString("copyright")
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                             e.printStackTrace()
                         }
                     }
-                    recyclerView.adapter = Adapter(recyclerView, this@MainActivity, recyclerViewData)
+                    recyclerView.adapter = Adapter(recyclerView, this@MainActivity, recyclerViewData, this@MainActivity)
                 })
             }
         })

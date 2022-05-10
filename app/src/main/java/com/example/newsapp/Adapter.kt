@@ -1,22 +1,20 @@
 package com.example.newsapp
 
 import android.app.Activity
-import android.graphics.Canvas
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 
 
-class Adapter(private val recyclerView: RecyclerView,private val activity: Activity, private val data: ArrayList<NasaData>) : RecyclerView.Adapter<Adapter.ViewHolder>() {
+class Adapter(private val recyclerView: RecyclerView,private val activity: Activity, private val data: ArrayList<NasaData>, private val context: Context) : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewTitle: TextView = itemView.findViewById(R.id.title)
@@ -40,15 +38,23 @@ class Adapter(private val recyclerView: RecyclerView,private val activity: Activ
         holder.textViewAuthor.text = element.author
         Picasso.get().load(element.imageUrl).into(holder.image)
         holder.layout.setOnClickListener(View.OnClickListener {
-            if (holder.textViewDescription.text.isEmpty()){
-                val linearLayoutManager: LinearLayoutManager  = recyclerView.layoutManager as LinearLayoutManager
-                linearLayoutManager.scrollToPositionWithOffset(position, 0);
-                holder.textViewDescription.updateLayoutParams{height = WRAP_CONTENT}
-                holder.textViewDescription.text = element.description
-            } else {
-                holder.textViewDescription.text = ""
-                holder.textViewDescription.updateLayoutParams{height = 0}
-            }
+            val intent = Intent(activity, ActivityMore::class.java)
+            intent.putExtra("imageUrl", element.imageUrl)
+            intent.putExtra("title", element.title)
+            intent.putExtra("author", element.author)
+            intent.putExtra("description", element.description)
+
+            context.startActivity(intent)
+            // Этот код открывает описание без перехода на отдельну активность
+            //if (holder.textViewDescription.text.isEmpty()){
+            //    val linearLayoutManager: LinearLayoutManager  = recyclerView.layoutManager as LinearLayoutManager
+            //    linearLayoutManager.scrollToPositionWithOffset(position, 0);
+            //    holder.textViewDescription.updateLayoutParams{height = WRAP_CONTENT}
+            //    holder.textViewDescription.text = element.description
+            //} else {
+            //    holder.textViewDescription.text = ""
+            //    holder.textViewDescription.updateLayoutParams{height = 0}
+            //}
 
         })
     }
